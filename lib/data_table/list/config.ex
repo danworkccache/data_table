@@ -5,6 +5,7 @@ defmodule DataTable.List.Config do
 
   defstruct [
     key_field: :list_index,
+    filters: %{},
     mapper: &__MODULE__.default_mapper/2,
   ]
 
