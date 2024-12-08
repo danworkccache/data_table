@@ -92,7 +92,7 @@ defmodule DataTable.Theme.Tailwind.Dropdown do
         aria-orientation="vertical"
         aria-labelledby="options-menu"
       >
-        <div class="py-1" role="none">
+        <div role="none">
           <%= render_slot(@inner_block) %>
         </div>
       </div>

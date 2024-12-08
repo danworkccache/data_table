@@ -235,7 +235,7 @@ defmodule DataTable.Theme.Tailwind do
                 <Heroicons.list_bullet mini class="h-4 w-4"/>
               </:trigger_element>
 
-              <div class="p-4 bg-white top-4 right-0 rounded space-y-2">
+              <div class="p-4 bg-white top-4 right-0 rounded-md space-y-2">
                 <div :for={{name, id, checked} <- @togglable_fields} class="relative flex items-start cursor-pointer" phx-click="toggle-field" phx-target={@target} phx-value-field={id}>
                   <div class="flex h-5 w-5 items-center">
                     <div class="border border-gray-300 rounded relative w-[18px] h-[18px]">
