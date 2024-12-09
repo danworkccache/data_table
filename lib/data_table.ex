@@ -180,6 +180,9 @@ defmodule DataTable do
       required: true
   end
 
+  attr :page_size, :integer,
+    doc: "Maximum number of rows displayed per page or table, defaults to 20"
+
   @doc """
   Renders a `DataTable` in a given `LiveView` as a `LiveComponent`.
 

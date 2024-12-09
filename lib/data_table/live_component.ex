@@ -207,8 +207,6 @@ defmodule DataTable.LiveComponent do
     assigns = socket.assigns
     static = assigns.static
 
-    page_size = 20 # spec.page_size
-
     assign(socket, %{
       # Selection
       has_selection: assigns.selection != {:include, %{}},
@@ -248,9 +246,6 @@ defmodule DataTable.LiveComponent do
       togglable_fields: Enum.map(static.fields, fn field ->
         {field.name, id_to_string(field.id), MapSet.member?(assigns.shown_fields, field.id)}
       end),
-
-      # Pagination
-      page_size: page_size,
 
       # Slots
       field_slots:
@@ -327,6 +322,7 @@ defmodule DataTable.LiveComponent do
 
         sort: nil,
         page: 0,
+        page_size: Map.get(assigns, :page_size, 20),
 
         handle_nav: assigns[:handle_nav],
         expanded: %{},
@@ -335,7 +331,7 @@ defmodule DataTable.LiveComponent do
 
         dispatched_nav: nil,
 
-        first: false
+        first: true
       })
       |> assign_base_render_data()
       |> do_query()
