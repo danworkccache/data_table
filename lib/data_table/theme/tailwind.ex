@@ -113,9 +113,9 @@ defmodule DataTable.Theme.Tailwind do
         filters_fields={@static.filters_fields}/>
 
       <div class="flex flex-col">
-        <div class="overflow-x-auto">
+        <div>
           <div class="inline-block min-w-full align-middle">
-            <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+            <div class="overflow-y-visible shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
               <table class="min-w-full divide-y divide-gray-300 bg-white">
                 <.table_header
                   can_select={@static.can_select}
