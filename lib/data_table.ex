@@ -158,6 +158,9 @@ defmodule DataTable do
       If present, columns will be sortable. The sort will occur on
       the specified field. Defaults to the first field in `fields`.
       """
+
+    attr :footer, :any,
+      doc: "Footer displayed at bottom of table for column."
   end
 
   slot :row_expanded, doc: "Markup which will be rendered when a row is expanded" do

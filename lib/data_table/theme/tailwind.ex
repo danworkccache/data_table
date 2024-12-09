@@ -112,6 +112,16 @@ defmodule DataTable.Theme.Tailwind do
         filter_columns={@static.filter_columns}
         filters_fields={@static.filters_fields}/>
 
+      <.table_pagination
+        page_start_item={@page_start_item}
+        page_end_item={@page_end_item}
+        total_results={@total_results}
+        page={@page}
+        page_size={@page_size}
+        target={@target}
+        has_prev={@has_prev}
+        has_next={@has_next}/>
+
       <div class="flex flex-col">
         <div>
           <div class="inline-block min-w-full align-middle">
@@ -137,14 +147,10 @@ defmodule DataTable.Theme.Tailwind do
                   target={@target}/>
 
                 <.table_footer
-                  page_start_item={@page_start_item}
-                  page_end_item={@page_end_item}
-                  total_results={@total_results}
-                  page={@page}
-                  page_size={@page_size}
-                  target={@target}
-                  has_prev={@has_prev}
-                  has_next={@has_next}/>
+                  source={@static.source}
+                  fields={@field_slots}
+                  can_select={@static.can_select}
+                />
               </table>
             </div>
           </div>
@@ -293,62 +299,81 @@ defmodule DataTable.Theme.Tailwind do
     """
   end
 
+  def table_pagination(assigns) do
+    ~H"""
+    <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+      <div>
+        <p class="text-sm text-gray-700">
+          Showing
+          <span class="font-medium"><%= @page_start_item %></span>
+          to
+          <span class="font-medium"><%= @page_end_item %></span>
+          of
+          <span class="font-medium"><%= @total_results %></span>
+          results
+        </p>
+      </div>
+      <div>
+        <% pages = Util.generate_pages(@page, @page_size, @total_results) %>
+        <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+          <a :if={@has_prev} phx-click="change-page" phx-target={@target} phx-value-page={@page - 1} class="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:cursor-pointer focus:z-20">
+            <span class="sr-only">Previous</span>
+            <Heroicons.chevron_left mini={true} class="h-5 w-5"/>
+          </a>
+          <a :if={not @has_prev} class="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500">
+            <span class="sr-only">Previous</span>
+            <Heroicons.chevron_left mini={true} class="h-5 w-5"/>
+          </a>
+
+          <a
+            :for={{:page, page_num, current} <- pages}
+            phx-click="change-page"
+            phx-target={@target}
+            phx-value-page={page_num}
+            class={[
+              "relative inline-flex items-center border px-4 py-2 text-sm font-medium hover:cursor-pointer focus:z-20",
+              (
+                if current, do: "z-20 border-indigo-500 bg-indigo-50 text-indigo-600",
+                  else: "z-10 border-gray-300 bg-white text-gray-500 hover:bg-gray-50"
+              )
+            ]}>
+            <%= page_num + 1 %>
+          </a>
+
+          <a :if={@has_next} phx-click="change-page" phx-target={@target} phx-value-page={@page + 1} class="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:cursor-pointer focus:z-20">
+            <span class="sr-only">Next</span>
+            <Heroicons.chevron_right mini={true} class="h-5 w-5"/>
+          </a>
+          <a :if={not @has_next} class="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500">
+            <span class="sr-only">Next</span>
+            <Heroicons.chevron_right mini={true} class="h-5 w-5"/>
+          </a>
+        </nav>
+      </div>
+    </div>
+    """
+  end
+
   def table_footer(assigns) do
     ~H"""
     <tfoot class="bg-gray-50">
       <tr>
-        <td colspan="20" class="py-2 px-4">
-          <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-            <div>
-              <p class="text-sm text-gray-700">
-                Showing
-                <span class="font-medium"><%= @page_start_item %></span>
-                to
-                <span class="font-medium"><%= @page_end_item %></span>
-                of
-                <span class="font-medium"><%= @total_results %></span>
-                results
-              </p>
-            </div>
-            <div>
-              <% pages = Util.generate_pages(@page, @page_size, @total_results) %>
-              <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                <a :if={@has_prev} phx-click="change-page" phx-target={@target} phx-value-page={@page - 1} class="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:cursor-pointer focus:z-20">
-                  <span class="sr-only">Previous</span>
-                  <Heroicons.chevron_left mini={true} class="h-5 w-5"/>
-                </a>
-                <a :if={not @has_prev} class="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500">
-                  <span class="sr-only">Previous</span>
-                  <Heroicons.chevron_left mini={true} class="h-5 w-5"/>
-                </a>
-
-                <a
-                  :for={{:page, page_num, current} <- pages}
-                  phx-click="change-page"
-                  phx-target={@target}
-                  phx-value-page={page_num}
-                  class={[
-                    "relative inline-flex items-center border px-4 py-2 text-sm font-medium hover:cursor-pointer focus:z-20",
-                    (
-                      if current, do: "z-20 border-indigo-500 bg-indigo-50 text-indigo-600",
-                        else: "z-10 border-gray-300 bg-white text-gray-500 hover:bg-gray-50"
-                    )
-                  ]}>
-                  <%= page_num + 1 %>
-                </a>
-
-                <a :if={@has_next} phx-click="change-page" phx-target={@target} phx-value-page={@page + 1} class="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:cursor-pointer focus:z-20">
-                  <span class="sr-only">Next</span>
-                  <Heroicons.chevron_right mini={true} class="h-5 w-5"/>
-                </a>
-                <a :if={not @has_next} class="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500">
-                  <span class="sr-only">Next</span>
-                  <Heroicons.chevron_right mini={true} class="h-5 w-5"/>
-                </a>
-              </nav>
-            </div>
-          </div>
+        <%= if @can_select do %>
+          <td></td>
+        <% end %>
+        <td :for={field <- @fields} class="py-2 px-4">
+          <%= if field.footer != nil do %>
+          <%= @source
+              |> then(fn {_, {source, _}} -> source end)
+              |> Enum.map(fn row ->
+                key = List.first(field.fields)
+                Map.get(row, key)
+              end)
+              |> field.footer.()
+          %>
+          <% end %>
         </td>
+        <td></td>
       </tr>
     </tfoot>
     """
