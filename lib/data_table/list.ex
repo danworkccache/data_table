@@ -56,6 +56,9 @@ defmodule DataTable.List do
           :integer ->
             {value, ""} = Integer.parse(filter.value)
             value
+          :float ->
+            {value, ""} = Float.parse(filter.value)
+            value
           :string ->
             String.downcase(filter.value || "")
           :boolean ->

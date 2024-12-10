@@ -149,6 +149,23 @@ defmodule DataTable.Ecto do
           gt: ">"
         ]
       },
+      float: %{
+        validate: fn
+          _op, nil ->
+            false
+
+          _op, val ->
+            case Float.parse(val) do
+              {_, ""} -> true
+              _ -> false
+            end
+        end,
+        ops: [
+          eq: "=",
+          lt: "<",
+          gt: ">"
+        ]
+      },
       boolean: %{
         validate: fn _op, val ->
           case val do
