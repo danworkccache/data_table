@@ -3,8 +3,8 @@ defmodule DataTable.Theme.Util do
   Utilities which are useful for building your own theme.
   """
 
-  def generate_pages(page, page_size, total_results) do
-    max_page = div(total_results + (page_size - 1), page_size) - 1
+  def generate_pages(page, page_size, results_count) do
+    max_page = div(results_count + (page_size - 1), page_size) - 1
 
     middle_pages =
       (page - 3)..(page + 3)

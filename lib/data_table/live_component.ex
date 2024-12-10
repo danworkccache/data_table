@@ -263,8 +263,8 @@ defmodule DataTable.LiveComponent do
 
     page_idx = assigns.page
     page_size = assigns.page_size
-    total_results = assigns.total_results
-    max_page = div(total_results + (page_size - 1), page_size) - 1
+    results_count = Enum.count(assigns.total_results)
+    max_page = div(results_count + (page_size - 1), page_size) - 1
 
     assign(socket, %{
       # Data
@@ -284,9 +284,9 @@ defmodule DataTable.LiveComponent do
       end),
 
       # Pagination
-      page_start_item: min(page_size * page_idx, total_results),
-      page_end_item: min(page_size * page_idx + page_size, total_results),
-      total_results: total_results,
+      page_start_item: min(page_size * page_idx, results_count),
+      page_end_item: min(page_size * page_idx + page_size, results_count),
+      total_results: assigns.total_results,
       page_max: max_page,
       has_prev: page_idx > 0,
       has_next: page_idx < max_page,

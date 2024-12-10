@@ -147,7 +147,7 @@ defmodule DataTable.Theme.Tailwind do
                   target={@target}/>
 
                 <.table_footer
-                  source={@static.source}
+                  total_results={@total_results}
                   fields={@field_slots}
                   can_select={@static.can_select}
                 />
@@ -309,12 +309,12 @@ defmodule DataTable.Theme.Tailwind do
           to
           <span class="font-medium"><%= @page_end_item %></span>
           of
-          <span class="font-medium"><%= @total_results %></span>
+          <span class="font-medium"><%= Enum.count(@total_results) %></span>
           results
         </p>
       </div>
       <div>
-        <% pages = Util.generate_pages(@page, @page_size, @total_results) %>
+        <% pages = Util.generate_pages(@page, @page_size, Enum.count(@total_results)) %>
         <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
           <a :if={@has_prev} phx-click="change-page" phx-target={@target} phx-value-page={@page - 1} class="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:cursor-pointer focus:z-20">
             <span class="sr-only">Previous</span>
@@ -363,8 +363,7 @@ defmodule DataTable.Theme.Tailwind do
         <% end %>
         <td :for={field <- @fields} class="py-2 px-4">
           <%= if field.footer != nil do %>
-          <%= @source
-              |> then(fn {_, {source, _}} -> source end)
+          <%= @total_results
               |> Enum.map(fn row ->
                 key = List.first(field.fields)
                 Map.get(row, key)

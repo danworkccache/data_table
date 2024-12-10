@@ -94,12 +94,12 @@ defmodule DataTable.Theme.Basic do
                 to
                 <span class="end"><%= @page_end_item %></span>
                 of
-                <span class="total"><%= @total_results %></span>
+                <span class="total"><%= Enum.count(@total_results) %></span>
                 results
               </div>
 
               <nav class="pagination-buttons">
-                <% pages = Util.generate_pages(@page, @page_size, @total_results) %>
+                <% pages = Util.generate_pages(@page, @page_size, Enum.count(@total_results)) %>
 
                 <a :if={@has_prev} class="prev" phx-click="change-page" phx-value-page={@page - 1} phx-target={@target}>
                   Previous Page

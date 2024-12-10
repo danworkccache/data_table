@@ -9,18 +9,20 @@ defmodule DataTable.List do
 
   @impl true
   def query({list, config}, query) do
-    results =
+    total_results =
       list
       |> Stream.with_index()
       |> Stream.map(fn {item, idx} -> config.mapper.(item, idx) end)
       |> filter_results(query.filters, config.filters)
       |> maybe_apply(query.sort, &sort_results/2)
+
+    results = total_results
       |> maybe_apply(query.offset, &Stream.drop/2)
       |> maybe_apply(query.limit, &Stream.take/2)
 
     %Result{
       results: results,
-      total_results: Enum.count(list)
+      total_results: total_results,
     }
   end
 

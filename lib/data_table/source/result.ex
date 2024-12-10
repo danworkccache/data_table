@@ -3,6 +3,6 @@ defmodule DataTable.Source.Result do
 
   defstruct [
     results: [],
-    total_results: nil
+    total_results: []
   ]
 end
