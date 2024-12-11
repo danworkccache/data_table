@@ -110,15 +110,12 @@ defmodule DataTable.Theme.Tailwind do
         top_right_slot={@top_right}
         filter_column_order={@static.filter_column_order}
         filter_columns={@static.filter_columns}
-        filters_fields={@static.filters_fields}/>
-
-      <.table_pagination
+        filters_fields={@static.filters_fields}
         page_start_item={@page_start_item}
         page_end_item={@page_end_item}
         total_results={@total_results}
         page={@page}
         page_size={@page_size}
-        target={@target}
         has_prev={@has_prev}
         has_next={@has_next}/>
 
@@ -183,10 +180,20 @@ defmodule DataTable.Theme.Tailwind do
           filters_fields={@filters_fields}/>
       </div>
 
-      <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <div class="mt-4 sm:mt-0 sm:ml-16 flex gap-4">
         <%= if assigns[:top_right_slot] do %>
           <%= render_slot(@top_right_slot) %>
         <% end %>
+
+        <.table_pagination
+          page_start_item={@page_start_item}
+          page_end_item={@page_end_item}
+          total_results={@total_results}
+          page={@page}
+          page_size={@page_size}
+          target={@target}
+          has_prev={@has_prev}
+          has_next={@has_next}/>
       </div>
     </div>
     """
@@ -301,20 +308,14 @@ defmodule DataTable.Theme.Tailwind do
 
   def table_pagination(assigns) do
     ~H"""
-    <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+    <div class="flex gap-4 items-center">
       <div>
         <p class="text-sm text-gray-700">
-          Showing
-          <span class="font-medium"><%= @page_start_item %></span>
-          to
-          <span class="font-medium"><%= @page_end_item %></span>
-          of
           <span class="font-medium"><%= Enum.count(@total_results) %></span>
           results
         </p>
       </div>
       <div>
-        <% pages = Util.generate_pages(@page, @page_size, Enum.count(@total_results)) %>
         <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
           <a :if={@has_prev} phx-click="change-page" phx-target={@target} phx-value-page={@page - 1} class="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:cursor-pointer focus:z-20">
             <span class="sr-only">Previous</span>
@@ -325,20 +326,12 @@ defmodule DataTable.Theme.Tailwind do
             <Heroicons.chevron_left mini={true} class="h-5 w-5"/>
           </a>
 
-          <a
-            :for={{:page, page_num, current} <- pages}
-            phx-click="change-page"
-            phx-target={@target}
-            phx-value-page={page_num}
+          <span
             class={[
-              "relative inline-flex items-center border px-4 py-2 text-sm font-medium hover:cursor-pointer focus:z-20",
-              (
-                if current, do: "z-20 border-indigo-500 bg-indigo-50 text-indigo-600",
-                  else: "z-10 border-gray-300 bg-white text-gray-500 hover:bg-gray-50"
-              )
+              "relative inline-flex items-center border px-4 py-2 text-sm font-medium focus:z-20 z-10 border-gray-300 bg-white text-gray-500"
             ]}>
-            <%= page_num + 1 %>
-          </a>
+            <%= @page + 1 %> of <%= Util.max_page(@page_size, Enum.count(@total_results)) %>
+          </span>
 
           <a :if={@has_next} phx-click="change-page" phx-target={@target} phx-value-page={@page + 1} class="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:cursor-pointer focus:z-20">
             <span class="sr-only">Next</span>
