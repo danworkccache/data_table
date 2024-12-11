@@ -347,6 +347,20 @@ defmodule DataTable.Theme.Tailwind do
     """
   end
 
+  def eval_footer({fields, eval}, total_results) do
+    atom_fields = fields
+    |> Enum.map(&String.to_atom/1)
+
+    total_results
+    |> Enum.map(fn row ->
+      row
+      |> Map.take(atom_fields)
+      |> Map.values()
+    end)
+    |> eval.()
+    |> (&Float.round(&1, 4)).()
+  end
+
   def table_footer(assigns) do
     ~H"""
     <tfoot class="bg-gray-50">
@@ -356,13 +370,7 @@ defmodule DataTable.Theme.Tailwind do
         <% end %>
         <td :for={field <- @fields} class="py-2 px-4">
           <%= if field.footer != nil do %>
-          <%= @total_results
-              |> Enum.map(fn row ->
-                key = List.first(field.fields)
-                Map.get(row, key)
-              end)
-              |> field.footer.()
-          %>
+          <%= eval_footer(field.footer, @total_results) %>
           <% end %>
         </td>
         <td></td>
