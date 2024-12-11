@@ -477,10 +477,7 @@ defmodule DataTable.LiveComponent do
     query_params = make_query_params(socket)
     query_params = %{
       query_params |
-      shown_columns: [id_col],
-      sort: nil,
-      page: 0,
-      page_size: nil
+      sort: nil
     }
 
     evaluate_selection = fn ->
