@@ -64,17 +64,28 @@ defmodule DataTable.List do
           :string ->
             String.downcase(filter.value || "")
           :boolean ->
-            filter.value == "true"
+            case filter.value do
+              "true" -> true
+              "false" -> false
+            end
+          :datetime ->
+            case DateTime.from_iso8601(filter.value) do
+              {:ok, datetime, _} -> datetime
+            end
         end
 
         row_value =
           case {filter_type, Map.get(row, filter.field)} do
             {:string, value} -> String.downcase(value)
+            {:datetime, value} -> case DateTime.from_iso8601(value) do
+              {:ok, datetime, _} -> datetime
+            end
             {_, value} -> value
           end
 
         case {filter_type, filter.op} do
             {:string, :contains} -> String.contains?(row_value, filter_value)
+            {:datetime, comp} -> DateTime.compare(row_value, filter_value) == comp
             {_, :eq} -> row_value == filter_value
             {_, :lt} -> row_value < filter_value
             {_, :gt} -> row_value > filter_value

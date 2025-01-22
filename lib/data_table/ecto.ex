@@ -165,6 +165,23 @@ defmodule DataTable.Ecto do
         ops: [
           eq: "="
         ]
+      },
+      datetime: %{
+        validate: fn
+        _op, nil ->
+          false
+
+        _op, val ->
+          case DateTime.from_iso8601(val) do
+            {:ok, _, _} -> true
+            _ -> false
+          end
+        end,
+        ops: [
+          eq: "=",
+          lt: "<",
+          gt: ">"
+        ]
       }
     }
   end
