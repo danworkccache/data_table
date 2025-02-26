@@ -347,18 +347,11 @@ defmodule DataTable.Theme.Tailwind do
     """
   end
 
-  def eval_footer({fields, eval}, total_results) do
-    atom_fields = fields
-    |> Enum.map(&String.to_atom/1)
-
+  def eval_footer(eval, total_results) do
     result =
       total_results
-        |> Enum.map(fn row ->
-          row
-          |> Map.take(atom_fields)
-          |> Map.values()
-        end)
-        |> eval.()
+      |> Enum.to_list()
+      |> eval.()
 
     if is_float(result) do
       Float.round(result, 4)
