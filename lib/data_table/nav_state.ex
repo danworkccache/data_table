@@ -131,12 +131,10 @@ defmodule DataTable.NavState do
             [{:filter, {field, op, v}}]
 
           {"asc", _} ->
-            field = String.to_existing_atom(v)
-            [{:sort, {field, :asc}}]
+            [{:sort, {v, :asc}}]
 
           {"desc", _} ->
-            field = String.to_existing_atom(v)
-            [{:sort, {field, :desc}}]
+            [{:sort, {v, :desc}}]
 
           {"page", _} ->
             case Integer.parse(v) do

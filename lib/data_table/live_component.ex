@@ -33,7 +33,7 @@ defmodule DataTable.LiveComponent do
       socket.assigns.filters.filters
       |> Enum.map(fn f ->
         %{
-          field: String.to_existing_atom(f.field),
+          field: f.field,
           op: String.to_existing_atom(f.op),
           value: f.value
         }
@@ -159,10 +159,10 @@ defmodule DataTable.LiveComponent do
 
       # Filters
       filter_column_order: Enum.map(filterable_columns, fn data ->
-        Atom.to_string(data.col_id)
+        data.col_id
       end),
       filter_columns: Enum.into(Enum.map(filterable_columns, fn data ->
-        id_str = Atom.to_string(data.col_id)
+        id_str = data.col_id
         out = %{
           id: id_str,
           name: id_str,
@@ -186,8 +186,8 @@ defmodule DataTable.LiveComponent do
         filterable_columns
         |> Enum.map(fn col ->
           %{
-            name: Atom.to_string(col.col_id),
-            id_str: Atom.to_string(col.col_id),
+            name: col.col_id,
+            id_str: col.col_id,
           }
         end),
 
@@ -386,9 +386,8 @@ defmodule DataTable.LiveComponent do
     {:noreply, socket}
   end
 
-  def handle_event("cycle-sort", %{"sort-toggle-id" => field_str}, socket) do
+  def handle_event("cycle-sort", %{"sort-toggle-id" => field}, socket) do
     # TODO validate further. Not a security issue, but nice to have.
-    field = String.to_existing_atom(field_str)
 
     socket =
       socket
