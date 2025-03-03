@@ -236,9 +236,9 @@ defmodule DataTable.LiveComponent do
               {^sort_field, :desc} -> :desc
               _ -> nil
             end,
-            sort_toggle_id: Atom.to_string(field.sort_field),
+            sort_toggle_id: field.sort_field,
             can_filter: filter_field != nil,
-            filter_field_id: Atom.to_string(filter_field),
+            filter_field_id: filter_field,
             filter_field_op_id: Atom.to_string(filter_field_op)
           }
         end),
@@ -320,7 +320,7 @@ defmodule DataTable.LiveComponent do
         filters: filters,
         filters_form: filters_form,
 
-        sort: nil,
+        sort: Map.get(socket.assigns, :sort),
         page: 0,
         page_size: Map.get(assigns, :page_size, 20),
 

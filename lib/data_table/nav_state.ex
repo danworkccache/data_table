@@ -100,8 +100,8 @@ defmodule DataTable.NavState do
 
     sort_params = case nav_state.sort do
       nil -> []
-      {field, :asc} -> [{"asc", Atom.to_string(field)}]
-      {field, :desc} -> [{"desc", Atom.to_string(field)}]
+      {field, :asc} -> [{"asc", field}]
+      {field, :desc} -> [{"desc", field}]
     end
 
     Enum.concat([
